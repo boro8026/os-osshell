@@ -5,14 +5,19 @@
 #include <sstream>
 #include <vector>
 #include <unistd.h>
+#include <dirent.h>
+#include <fstream>
 
 void splitString(std::string text, char d, std::vector<std::string>& result);
 void vectorOfStringsToArrayOfCharArrays(std::vector<std::string>& list, char ***result);
 void freeArrayOfCharArrays(char **array, size_t array_length);
-void printHistory(char **history);
+void printHistory(std::ofstream history);
 
 int main (int argc, char **argv)
 {
+    std::ofstream historyOF;
+    std::ifstream historyIF;
+
     // Get list of paths to binary executables
     std::vector<std::string> os_path_list;
     char* os_path = getenv("PATH");
@@ -26,8 +31,6 @@ int main (int argc, char **argv)
         printf("PATH[%2d]: %s\n", i, os_path_list[i].c_str());
     }
     /////////////////////////////////DONT INCLUDE THIS IN FINAL/////////////////////////////
-
-
 
     // Welcome message
     printf("Welcome to OSShell! Please enter your commands ('exit' to quit).\n");
@@ -49,16 +52,27 @@ int main (int argc, char **argv)
 
         std::string input;
         std::getline(std::cin, input);
-        
-
+    
         if(input == "exit"){
+            historyOF.open("history.txt",std::ios_base::app);
+            history << "exit\n";
+            historyOF.close();
             // Free allocated memory
             //freeArrayOfCharArrays(command_list_exec, command_list.size() + 1);
             break;
         }
         else if(input == "history"){
-            vectorOfStringsToArrayOfCharArrays(command_list, &command_list_exec);
-            //print the chain of previous commands
+            //vectorOfStringsToArrayOfCharArrays(command_list, &command_list_exec);
+            historyIF.open("history.txt",std::ios::in);
+            std::string currLine;
+            while(getline(history,currLine))
+            {
+                std::cout << currLine;
+            }
+            history.close();
+            history.open("history.txt",std::ios::app);
+            history << "history\n";
+            history.close();
         }
         else if(input != ""){
             //split the input from the user
@@ -160,10 +174,7 @@ void splitString(std::string text, char d, std::vector<std::string>& result)
     }
 }
 
-void printHistory(char **history){
-    int i = 0;
-    while(history[i] != NULL){
-        std::cout << "  " << i+1 << ": " << history[i];
-        i++;
-    }
+//function to find executable
+bool executableExists(std::string pathName){
+    //either stat library or filesystem
 }
