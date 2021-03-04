@@ -23,7 +23,6 @@ void printTotalHistory();
 int main (int argc, char **argv)
 {
     std::ofstream historyOF;
-    std::ifstream historyIF;
     int pid;
     int parentPid;
 
@@ -52,6 +51,7 @@ int main (int argc, char **argv)
             historyOF << "exit\n";
             historyOF.close();
             freeArrayOfCharArrays(command_list_exec, command_list.size() + 1);
+            std::cout << std::endl;
             break;
         }
         else if(command_list[0] == "history"){
@@ -73,7 +73,7 @@ int main (int argc, char **argv)
                     historyOF.open("history.txt",std::ios::app);
                     historyOF << input << "\n";
                     historyOF.close();
-                    std::cout << "Error: history expects an integer > 0 (or clear)" << std::endl;
+                    std::cout << "Error: history expects an integer > 0 (or 'clear')" << std::endl;
                 }
             }
             else if(command_list.size() == 1){ //if a normal history
@@ -87,7 +87,7 @@ int main (int argc, char **argv)
                 historyOF.open("history.txt",std::ios::app);
                 historyOF << input << "\n";
                 historyOF.close();
-                std::cout << "Error: history expects an integer > 0 (or clear)\n";
+                std::cout << "Error: history expects an integer > 0 (or 'clear')\n";
             }
         }
         else if(input != ""){ //any other call
